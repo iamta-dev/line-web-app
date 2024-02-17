@@ -176,9 +176,10 @@
             </div>
 
             <div class="col-10 mb-3">
-                <label for="inputcountItem" class="form-label"><i class="fa-solid fa-shirt"></i> จำนวนผ้าที่นำมาซัก</label>
-                <input type="number" class="form-control" name="countItem" id="countItem" placeholder="จำนวนผ้าที่นำมาซัก"
-                    required>
+                <label for="inputcountItem" class="form-label"><i class="fa-solid fa-shirt"></i>
+                    จำนวนผ้าที่นำมาซัก</label>
+                <input type="number" class="form-control" name="countItem" id="countItem"
+                    placeholder="จำนวนผ้าที่นำมาซัก" required>
             </div>
 
             <div class="col-10 mb-3">
@@ -215,7 +216,36 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
     <script>
+
+        const LIFF_ID = '2003606864-VZ3wB4vy';
+        const APP_SCRIPT_DEPLOYMENT_ID = 'AKfycbzLVEQn9DMDszqKVegjT3rZkPOMFzBA_n0Nhkx1B_n8Hakzsr9uhS19G_etASDaOMmKnQ';
+
+        const checkLineLogin = async () => {
+            await liff.init({ liffId: LIFF_ID });
+            if (liff.isLoggedIn()) {
+                const profile = await liff.getProfile();
+
+                profileImage.src = profile.pictureUrl;
+                lineDisplayName.value = profile.displayName;
+                displayName.innerText = profile.displayName;
+                lineUserId.value = profile.userId;
+
+                mainApp.style.display = "block";
+                loader.style.display = "none";
+            } else {
+                liff.login();
+            }
+        };
+        const logOut = () => {
+            liff.logout();
+            window.location.reload();
+        };
+
+        checkLineLogin();
 
         function getCurrentDateTimeGMTplus7() {
             var currentDateTimeGMTplus7 = moment().utcOffset(420).format('DD/MM/YYYY HH:mm:ss');
@@ -245,11 +275,12 @@
                 })
             };
 
-            fetch('https://script.google.com/macros/s/AKfycbyH_k2ADFYV5YAqiJr9tcUEVRy7orp9KuN2wB6D4EgekrdqBPo4m9PnHqtIG5BSO98Kww/exec?action=adddata', options)
+            fetch('https://script.google.com/macros/s/' + APP_SCRIPT_DEPLOYMENT_ID + '/exec?action=adddata', options)
                 .then(response => success())
                 .catch(err => console.error(err));
 
         }
+
         function success() {
             document.querySelector("form").reset();
 
@@ -264,40 +295,6 @@
             sumbitLoaderDeactive.style.display = "block";
         }
 
-
-    </script>
-
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <script>
-        let userId = "";
-
-        const logOut = () => {
-            liff.logout();
-            window.location.reload();
-        };
-        const main = async () => {
-            await liff.init({ liffId: "2003606864-VZ3wB4vy" });
-            if (liff.isLoggedIn()) {
-                const profile = await liff.getProfile();
-
-                // update profile
-                profileImage.src = profile.pictureUrl;
-                lineDisplayName.value = profile.displayName;
-                displayName.innerText = profile.displayName;
-                lineUserId.value = profile.userId;
-
-                // collect userId
-                userId = profile.userId;
-
-                // show profile
-                mainApp.style.display = "block";
-                loader.style.display = "none";
-            } else {
-                liff.login();
-            }
-        };
-        main();
     </script>
 </body>
 
