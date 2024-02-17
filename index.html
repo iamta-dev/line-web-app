@@ -1,11 +1,304 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>MyNameApp</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+
+
+<style>
+    .line-profile {
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+    }
+
+    .icon-submit-loader {
+        width: 50px;
+        aspect-ratio: 2;
+        --_g: no-repeat radial-gradient(circle closest-side, #fff 90%, #0000);
+        background:
+            var(--_g) 0% 50%,
+            var(--_g) 50% 50%,
+            var(--_g) 100% 50%;
+        background-size: calc(100%/3) 50%;
+        animation: l3 1s infinite linear;
+    }
+
+    @keyframes l3 {
+        20% {
+            background-position: 0% 0%, 50% 50%, 100% 50%
+        }
+
+        40% {
+            background-position: 0% 100%, 50% 0%, 100% 50%
+        }
+
+        60% {
+            background-position: 0% 50%, 50% 100%, 100% 0%
+        }
+
+        80% {
+            background-position: 0% 50%, 50% 50%, 100% 100%
+        }
+    }
+
+    .loader {
+        position: fixed;
+        top: 50%;
+        left: 40%;
+        transform: translate(-50%, -50%);
+        width: 100px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        border: 8px solid #47474b;
+        animation:
+            l20-1 0.8s infinite linear alternate,
+            l20-2 1.6s infinite linear;
+    }
+
+    @keyframes l20-1 {
+        0% {
+            clip-path: polygon(50% 50%, 0 0, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%)
+        }
+
+        12.5% {
+            clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%)
+        }
+
+        25% {
+            clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 100%, 100% 100%, 100% 100%)
+        }
+
+        50% {
+            clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 100%, 50% 100%, 0% 100%)
+        }
+
+        62.5% {
+            clip-path: polygon(50% 50%, 100% 0, 100% 0%, 100% 0%, 100% 100%, 50% 100%, 0% 100%)
+        }
+
+        75% {
+            clip-path: polygon(50% 50%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 50% 100%, 0% 100%)
+        }
+
+        100% {
+            clip-path: polygon(50% 50%, 50% 100%, 50% 100%, 50% 100%, 50% 100%, 50% 100%, 0% 100%)
+        }
+    }
+
+    @keyframes l20-2 {
+        0% {
+            transform: scaleY(1) rotate(0deg)
+        }
+
+        49.99% {
+            transform: scaleY(1) rotate(135deg)
+        }
+
+        50% {
+            transform: scaleY(-1) rotate(0deg)
+        }
+
+        100% {
+            transform: scaleY(-1) rotate(-135deg)
+        }
+    }
+</style>
+
 <body>
-    <h1>My Name app</h1>
+    <div id="loader" class="loader"></div>
+    <div id="mainApp" style="display: none;" class="container">
+        <nav class="navbar navbar-light my-3" style="background-color: #BB875A;">
+            <div class="container-fluid d-flex justify-content-around">
+                <div class="d-flex flex-column justify-content-center align-items-center">
+                    <div style="width: 50px;" class="mb-1">
+                        <svg fill="#000000" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 490 490" xml:space="preserve">
+                            <g>
+                                <g>
+                                    <g>
+                                        <path d="M470,0H20c-5.523,0-10,4.478-10,10v470c0,5.522,4.477,10,10,10h450c5.522,0,10-4.478,10-10V10C480,4.478,475.522,0,470,0
+                    z M30,20h315v50H30V20z M460,470H30v-20h340v-20H30V90h430V470z M460,70h-95V20h95V70z" />
+                                        <path d="M245,405c74.439,0,135-60.561,135-135s-60.561-135-135-135s-135,60.561-135,135S170.561,405,245,405z M245,155
+                    c63.411,0,115,51.589,115,115s-51.589,115-115,115s-115-51.589-115-115S181.589,155,245,155z" />
+                                        <path d="M245,370c55.141,0,100-44.859,100-100s-44.859-100-100-100c-55.14,0-100,44.859-100,100S189.86,370,245,370z M245,190
+                    c44.112,0,80,35.888,80,80s-35.888,80-80,80s-80-35.888-80-80S200.888,190,245,190z" />
+                                        <path
+                                            d="M250,235v-20c-33.084,0-60,26.916-60,60h20C210,252.944,227.944,235,250,235z" />
+                                        <rect x="45" y="35" width="25" height="20" />
+                                        <rect x="85" y="35" width="25" height="20" />
+                                        <rect x="125" y="35" width="110" height="20" />
+                                        <rect x="385" y="35" width="20" height="20" />
+                                        <rect x="420" y="35" width="20" height="20" />
+                                        <rect x="405" y="115" width="35" height="20" />
+                                        <rect x="380" y="145" width="60" height="20" />
+                                        <path d="M85,180c19.299,0,35-15.701,35-35s-15.701-35-35-35s-35,15.701-35,35S65.701,180,85,180z M85,130c8.271,0,15,6.729,15,15
+                    s-6.729,15-15,15s-15-6.729-15-15S76.729,130,85,130z" />
+                                    </g>
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                    <h5 style="color: #231911;font-weight: bold;">Laundry app</h5>
+                </div>
+
+                <i style="font-size: 30px;" class="fa-solid fa-plus"></i>
+
+                <div class="d-flex flex-column justify-content-center align-items-center" onclick="logOut()"
+                    style="cursor: pointer;">
+                    <img id="profileImage" class="line-profile" src="" />
+                    <h5 id="displayName" style="color: #231911;font-weight: bold;">LINE</h5>
+                </div>
+            </div>
+        </nav>
+
+        <form class="d-flex flex-column justify-content-center align-items-center" id="form" onsubmit="save(this)">
+
+            <div class="col-10 mb-3">
+                <label for="text" class="form-label"><i class="fa-solid fa-receipt"></i> เลือกโปรโมชั่น</label>
+                <select name="proName" id="proName" class="form-select" aria-label="Default select example" required>
+                    <option selected disabled value="">เลือกโปรโมชั่น</option>
+                    <option value="ซักรีด50ตัว_50">ซักรีด50ตัว</option>
+                    <option value="ซักรีด40ตัว_40">ซักรีด40ตัว</option>
+                    <option value="ซักรีด30ตัว_30">ซักรีด30ตัว</option>
+                    <option value="ซักรีด20ตัว_20">ซักรีด20ตัว</option>
+                </select>
+            </div>
+
+            <div class="col-10 mb-3">
+                <label for="inputcountItem" class="form-label"><i class="fa-solid fa-shirt"></i> จำนวนผ้าที่นำมาซัก</label>
+                <input type="number" class="form-control" name="countItem" id="countItem" placeholder="จำนวนผ้าที่นำมาซัก"
+                    required>
+            </div>
+
+            <div class="col-10 mb-3">
+                <label for="inputotherMessage" class="form-label"><i class="fa-solid fa-comment-dots"></i>
+                    คำสั่งเพิ่มเติม</label>
+                <textarea class="form-control" name="otherMessage" id="otherMessage" rows="3"
+                    placeholder="เพิ่มเติม"></textarea>
+            </div>
+
+            <div class="col-10 mb-3" style="display: none;">
+                <input type="text" class="form-control" name="lineDisplayName" id="lineDisplayName" placeholder=""
+                    required>
+            </div>
+
+            <div class="col-10 mb-3" style="display: none;">
+                <input type="text" class="form-control" name="lineUserId" id="lineUserId" placeholder="" required>
+            </div>
+
+
+            <div class="col-6 d-flex flex-column justify-content-center align-items-center">
+                <button type="submit" class="btn d-flex flex-row justify-content-center align-items-center"
+                    style="background-color: #BB875A;color: white;">
+                    <span id="sumbitLoaderActive" class="icon-submit-loader" style="display: none;"></span>
+                    <div id="sumbitLoaderDeactive">
+                        <div class="d-flex flex-row justify-content-center align-items-center">
+                            <i class="fas fa-save"></i>
+                            <span style="padding-left: 5px;">ส่งข้อมูล</span>
+                        </div>
+                    </div>
+                </button>
+            </div>
+        </form>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script>
+
+        function getCurrentDateTimeGMTplus7() {
+            var currentDateTimeGMTplus7 = moment().utcOffset(420).format('DD/MM/YYYY HH:mm:ss');
+            return currentDateTimeGMTplus7;
+        }
+
+        function save(data) {
+            sumbitLoaderActive.style.display = "block";
+            sumbitLoaderDeactive.style.display = "none";
+
+            event.preventDefault();
+
+            const promotion = `${proName.value}`.split('_');
+
+            const options = {
+                mode: 'no-cors',
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    "now": getCurrentDateTimeGMTplus7(),
+                    "proName": promotion[0],
+                    "pushItem": promotion[1],
+                    "countItem": countItem.value,
+                    "otherMessage": otherMessage.value,
+                    "lineDisplayName": lineDisplayName.value,
+                    "lineUserId": lineUserId.value,
+                })
+            };
+
+            fetch('https://script.google.com/macros/s/AKfycbwQYW0zGQZT-eEKuATJ5dL28ynBqEtmIlxpc21BDW8ZQnJu9A_nuytZAZPMDwQNEBNGFA/exec?action=adddata', options)
+                .then(response => success())
+                .catch(err => console.error(err));
+
+        }
+        function success() {
+            document.querySelector("form").reset();
+
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'บันทึกข้อมูลสำเร็จ',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            sumbitLoaderActive.style.display = "none";
+            sumbitLoaderDeactive.style.display = "block";
+        }
+
+
+    </script>
+
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script>
+        let userId = "";
+
+        const logOut = () => {
+            liff.logout();
+            window.location.reload();
+        };
+        const main = async () => {
+            await liff.init({ liffId: "2003605011-rKjNZgxR" });
+            if (liff.isLoggedIn()) {
+                const profile = await liff.getProfile();
+
+                // update profile
+                profileImage.src = profile.pictureUrl;
+                lineDisplayName.value = profile.displayName;
+                displayName.innerText = profile.displayName;
+                lineUserId.value = profile.userId;
+
+                // collect userId
+                userId = profile.userId;
+
+                // show profile
+                mainApp.style.display = "block";
+                loader.style.display = "none";
+            } else {
+                liff.login();
+            }
+        };
+        main();
+    </script>
 </body>
+
 </html>
