@@ -152,7 +152,8 @@
                     <h5 style="color: #231911;font-weight: bold;">Laundry app</h5>
                 </div>
 
-                <i style="font-size: 30px;" class="fa-solid fa-plus"></i>
+                <!-- <i style="font-size: 30px;" class="fa-solid fa-plus"></i> -->
+                <h2 id="balance">0</h2>
 
                 <div class="d-flex flex-column justify-content-center align-items-center" onclick="logOut()"
                     style="cursor: pointer;">
@@ -222,7 +223,7 @@
     <script>
 
         const LIFF_ID = '2003606864-VZ3wB4vy';
-        const APP_SCRIPT_DEPLOYMENT_ID = 'AKfycbyMbZU9AGbfNzBcQ2NFeToTDEdlj54M6bUJ6jTpyMFJd66_5rUdhpa1nZdYxU9-JCkGtA';
+        const APP_SCRIPT_DEPLOYMENT_ID = 'AKfycbwHOdRAZ1b6YJN9xO5sniYTU24hhUE0ui5nn8FEvwKarAFMXU41jW_CgCoSvNPankt3oQ';
 
         const checkLineLogin = async () => {
             await liff.init({ liffId: LIFF_ID });
@@ -236,6 +237,7 @@
 
                 mainApp.style.display = "block";
                 loader.style.display = "none";
+                getBalance();
             } else {
                 liff.login();
             }
@@ -246,6 +248,24 @@
         };
 
         checkLineLogin();
+
+
+        function getBalance() {
+            const options = {
+                mode: 'no-cors',
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            };
+
+            fetch('https://script.google.com/macros/s/' + APP_SCRIPT_DEPLOYMENT_ID + '/exec?action=finddata', options)
+                .then(response => {
+                    console.log(response);
+                    const data = response.json();
+                    console.log(data);
+                    balance.innerText = data?.data?.balance || 99;
+                })
+                .catch(err => console.error(err));
+        }
 
         function getCurrentDateTimeGMTplus7() {
             var currentDateTimeGMTplus7 = moment().utcOffset(420).format('DD/MM/YYYY HH:mm:ss');
