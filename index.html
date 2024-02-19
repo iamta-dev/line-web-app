@@ -276,8 +276,8 @@
                 });
         }
 
-        function getCurrentDateTimeGMTplus7() {
-            var currentDateTimeGMTplus7 = moment().utcOffset(420).format('DD/MM/YYYY HH:mm:ss');
+        function getCurrentDateTimeGMTplus7(formatDate) {
+            var currentDateTimeGMTplus7 = moment().utcOffset(420).format(formatDate);
             return currentDateTimeGMTplus7;
         }
 
@@ -299,7 +299,7 @@
                 slipUploadData = {
                     base64: spt,
                     type: fileInput.type,
-                    name: fileInput.name
+                    name: `${lineUserId.value}_${getCurrentDateTimeGMTplus7('DDMMYYYYHHmmss')}_${fileInput.name}`
                 }
             }
 
@@ -324,7 +324,7 @@
                 mode: 'no-cors',
                 method: 'POST',
                 body: JSON.stringify({
-                    "now": getCurrentDateTimeGMTplus7(),
+                    "now": getCurrentDateTimeGMTplus7('DD/MM/YYYY HH:mm:ss'),
                     "proName": promotion[0],
                     "pushItem": promotion[1],
                     "countItem": countItem.value,
