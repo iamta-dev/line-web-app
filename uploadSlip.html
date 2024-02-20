@@ -173,30 +173,35 @@
         <form class="d-flex flex-column justify-content-center align-items-center" id="form" onsubmit="save(this)">
 
             <div class="col-10 mb-3">
-                <h2>🎉 Open Promotion Now </h2>
+                <h2>Upload Slip: <span id="primaryKey"></span></h2>
             </div>
+
             <div class="col-10 mb-3">
-                <label for="text" class="form-label"><i class="fa-solid fa-receipt"></i> เลือกโปรโมชั่น</label>
-                <select name="proName" id="proName" class="form-select" aria-label="Default select example" required>
-                    <option selected disabled value="">เลือกโปรโมชั่น</option>
-                    <option value="ซักรีด40ตัว_40">ซักรีด40ตัว</option>
-                    <option value="รีดอย่างดียว50ตัว_50">รีดอย่างดียว50ตัว</option>
-                    <option value="ซักพับ50ตัว_50">ซักพับ50ตัว</option>
-                </select>
+                <label for="inputDateSubmit" class="form-label"><i class="fa-solid fa-calendar-days"></i>
+                    วันที่</label>
+                <input type="text" class="form-control" name="dateSubmit" id="dateSubmit" placeholder="เลือกวันที่"
+                    required disabled>
+            </div>
+
+            <div class="col-10 mb-3">
+                <label for="inputproName" class="form-label"><i class="fa-solid fa-shirt"></i>
+                    โปรโมชั่น</label>
+                <input type="text" class="form-control" name="proName" id="proName" placeholder="เลือกโปรโมชั่น"
+                    required disabled>
             </div>
 
             <div class="col-10 mb-3">
                 <label for="inputcountItem" class="form-label"><i class="fa-solid fa-shirt"></i>
                     จำนวนผ้าที่นำมา</label>
                 <input type="number" class="form-control" name="countItem" id="countItem"
-                    placeholder="จำนวนผ้าที่นำมาซัก" required>
+                    placeholder="จำนวนผ้าที่นำมาซัก" required disabled>
             </div>
 
             <div class="col-10 mb-3">
                 <label for="inputotherMessage" class="form-label"><i class="fa-solid fa-comment-dots"></i>
                     คำสั่งเพิ่มเติม</label>
-                <textarea class="form-control" name="otherMessage" id="otherMessage" rows="3"
-                    placeholder="เพิ่มเติม"></textarea>
+                <textarea class="form-control" name="otherMessage" id="otherMessage" rows="3" placeholder="เพิ่มเติม"
+                    disabled></textarea>
             </div>
 
             <div class="col-10 mb-3" style="display: none;">
@@ -209,8 +214,8 @@
             </div>
 
             <div class="col-10 mb-3">
-                <label for="inputFile" class="form-label"><i class="fa-solid fa-images"></i>
-                    รูปผ้าที่นำมาซัก</label>
+                <label for="inputSlip" class="form-label"><i class="fa-solid fa-file-invoice-dollar"></i>
+                    สลิปจ่ายเงิน</label>
                 <input type="file" accept="image/*" onchange="previewFile()" class="form-control" id="inputFile"
                     aria-label="Upload" required>
             </div>
@@ -219,19 +224,24 @@
                 <div id="filePreview"></div>
             </div>
 
+            <img id="slipImg" src="" alt="">
+
             <div class="col-6 mb-5 d-flex flex-column justify-content-center align-items-center">
-                <button type="submit" class="btn d-flex flex-row justify-content-center align-items-center"
+                <button type="submit" id="btnSubmitFrom"
+                    class="btn d-flex flex-row justify-content-center align-items-center"
                     style="background-color: #BB875A;color: white;">
                     <span id="sumbitLoaderActive" class="icon-submit-loader" style="display: none;"></span>
                     <div id="sumbitLoaderDeactive">
                         <div class="d-flex flex-row justify-content-center align-items-center">
                             <i class="fas fa-save" style="font-size: 1.5rem;"></i>
-                            <span style="padding-left: 10px;font-size: 1.5rem;">เปิดโปรโมชั่น</span>
+                            <span style="padding-left: 10px;font-size: 1.5rem;">แจ้งชำระเงิน</span>
                         </div>
                     </div>
                 </button>
             </div>
         </form>
+
+
 
     </div>
 
@@ -275,10 +285,29 @@
         checkLineLogin();
 
         function getBalance(userId) {
-            axios.get('https://script.google.com/macros/s/' + APP_SCRIPT_DEPLOYMENT_ID + '/exec?&userId=' + userId)
+            axios.get('https://script.google.com/macros/s/' + APP_SCRIPT_DEPLOYMENT_ID + '/exec?action=finddata&userId=' + userId)
                 .then(response => {
                     console.log('Data from Google Apps Script:', response.data);
                     balance.innerText = isNaN(Number(response?.data?.balance)) ? 0 : Number(response?.data?.balance);
+
+                    const status = response?.data?.status || 'notfound';
+                    inputFile.disabled = true;
+                    btnSubmitFrom.disabled = true;
+
+                    if (`${status}`.trim().toUpperCase() == 'OPEN') {
+                        primaryKey.innerText = response?.data?.pk;
+                        dateSubmit.value = response?.data?.date;
+                        proName.value = response?.data?.proName;
+                        countItem.value = response?.data?.countItem ? Number(response?.data?.countItem) : 0;
+                        otherMessage.value = response?.data?.otherMessage;
+                        inputFile.disabled = false;
+                        btnSubmitFrom.disabled = false;
+                    }
+
+                    if (`${status}`.trim().toUpperCase() != 'OPEN') {
+                        primaryKey.innerHTML = 'ไม่พบรายการจ่ายเงิน';
+                    }
+
 
                 })
                 .catch(error => {
@@ -291,7 +320,7 @@
             return currentDateTimeGMTplus7;
         }
 
-        let uploadFileData= {};
+        let uploadFileData = {};
 
         function previewFile() {
             const preview = document.getElementById('filePreview');
@@ -309,7 +338,7 @@
                 uploadFileData = {
                     base64: spt,
                     type: fileInput.type,
-                    name: `${lineUserId.value}_${getCurrentDateTimeGMTplus7('DDMMYYYYHHmmss')}_Cloth_${fileInput.name}`
+                    name: `${lineUserId.value}_${getCurrentDateTimeGMTplus7('DDMMYYYYHHmmss')}_Slip_${fileInput.name}`
                 }
             }
 
@@ -326,26 +355,22 @@
 
             event.preventDefault();
 
-            const promotion = `${proName.value}`.split('_');
-
             const fileInput = document.getElementById('inputFile').files[0];
 
             const options = {
                 mode: 'no-cors',
                 method: 'POST',
                 body: JSON.stringify({
+                    "pk": `${primaryKey.innerText}`.trim(),
                     "date": getCurrentDateTimeGMTplus7('DD/MM/YYYY HH:mm:ss'),
-                    "proName": promotion[0],
-                    "pushItem": promotion[1],
-                    "countItem": countItem.value,
                     "otherMessage": otherMessage.value,
                     "lineDisplayName": lineDisplayName.value,
                     "lineUserId": lineUserId.value,
-                    "clothImg": JSON.stringify(uploadFileData),
+                    "slipImg": JSON.stringify(uploadFileData),
                 })
             };
 
-            fetch('https://script.google.com/macros/s/' + APP_SCRIPT_DEPLOYMENT_ID + '/exec?action=open', options)
+            fetch('https://script.google.com/macros/s/' + APP_SCRIPT_DEPLOYMENT_ID + '/exec?action=uploadSlip', options)
                 .then(response => success())
                 .catch(error => {
                     console.error('save error:', error);
@@ -356,11 +381,15 @@
         function success() {
             document.querySelector("form").reset();
             filePreview.innerHTML = '';
+            primaryKey.innerHTML = 'ไม่พบรายการจ่ายเงิน';
+            inputFile.disabled = true;
+            btnSubmitFrom.disabled = true;
+            
 
             Swal.fire({
                 position: 'center',
                 icon: 'success',
-                title: 'เปิดโปรโมชั่นสำเร็จ',
+                title: 'แจ้งชำระเงินสำเร็จ',
                 showConfirmButton: false,
                 timer: 1500
             });
