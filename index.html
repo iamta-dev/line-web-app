@@ -260,7 +260,7 @@
                 await loadLogin();
             } else {
                 liff.login();
-                await loadLogin();
+                window.location.reload();
             }
         };
         const logOut = () => {
