@@ -260,12 +260,13 @@
                 await loadLogin();
             } else {
                 liff.login();
-                window.location.reload();
+                checkLineLogin();
             }
         };
         const logOut = () => {
             liff.logout();
             window.location.reload();
+            checkLineLogin();
         };
 
         checkLineLogin();
